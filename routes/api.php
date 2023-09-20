@@ -15,7 +15,12 @@ use Advancelearn\ManagePaymentAndOrders\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('api')->group(function () {
-    Route::apiResource('/adm-orders', OrderController::class);
+    Route::get('/adm-orders', function () {
+
+        return app('orderFunction')->getOrders();
+
+
+    });
 
 });
 

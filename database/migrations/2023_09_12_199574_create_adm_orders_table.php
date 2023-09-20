@@ -20,7 +20,6 @@ return new class extends Migration {
             $table->integer('shipping_price');
             $table->integer('tax')->default(0);
             $table->string('description');
-            $table->string('discount_code');
             $table->date('shipping_date')->nullable();
             $table->softDeletes();
             $table->timestamps();
