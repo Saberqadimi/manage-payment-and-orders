@@ -158,23 +158,27 @@ create call method verifyPayAndConfirm::
         return $receipt;
     }
 ```
-###You can call this method to get all the information about your orders
+**You can call this method to get all the information about your orders**
 ```php
 app('orderFunction')->getOrders();
 ```
-###Use this method to display individual information of an order
+**Use this method to display individual information of an order**
 ```php
 app('orderFunction')->show($order);
 ```
-##Pay attention to the type of parameters
-###You can use this method to update an order
+####Pay attention to the type of parameters
+####You can use this method to update an order
 ```php
 app('orderFunction')->update(int $shippingId, int $addressId, string $description, string $shippingDate, array $items, array $audits, int $orderId);
 ```
-###You can use this method to cancel the order from the management side
+####You can use this method to cancel the order from the management side
 ```php
 app('orderFunction')->destroy($order)
 ```
 
+<a name="conclusion"></a>
+
+## Conclusion
+By utilizing this package, there is no need to create separate models for the order and payment processes. Moreover, it allows for the presentation of user information history and the management of these records. For instance, you can perform actions like updating the order status to various types and sections, organizing the order stages (e.g., sending the products, order cancellation, final registration, readiness for shipment), and more—all within a unified framework.
 
 
