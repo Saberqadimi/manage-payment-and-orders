@@ -1,0 +1,21 @@
+{
+    "name": "advancelearn/manage-payment-and-orders",
+    "description": "Orders and payments management system in Laravel and the feature of adding sales functionality for each model",
+    "autoload": {
+        "psr-4": {
+            "Advancelearn\\ManagePaymentAndOrders\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "saberqadimi",
+            "email": "qadimi43@gmail.com"
+        }
+    ],
+
+    "require": {
+        "php": "^8.0.2",
+        "guzzlehttp/guzzle": "^7.2",
+        "laravel/framework": "^9.19"
+    }
+}
