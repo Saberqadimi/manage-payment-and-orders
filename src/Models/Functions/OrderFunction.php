@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class OrderFunction
 {
 
-    public function getOrders()
+    public function getOrders(): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         return OrderResource::collection(app('order')::latest()->paginate(12));
     }
@@ -48,7 +48,7 @@ class OrderFunction
                 'payment_price' => $amount,
             ]);
 
-            $order->audits()->attach([AuditTypes::ORDER_REGISTRATION => ['description' => 'Initial order registration']]);
+            $order->audits()->attach([app('auditTypes')::ORDER_REGISTRATION => ['description' => 'Initial order registration']]);
 
             return new OrderResource($order);
         });
@@ -69,11 +69,11 @@ class OrderFunction
      * @param string $shippingDate
      * @param array $items
      * @param array $audits
+     * @param int $orderId
      * @param string|null $couponCode
-     * @param $orderId
      * @return mixed
      */
-    public function update(int $shippingId, int $addressId, string $description, string $shippingDate, array $items, array $audits, string $couponCode = null, $orderId)
+    public function update(int $shippingId, int $addressId, string $description, string $shippingDate, array $items, array $audits, int $orderId , string $couponCode = null)
     {
         return DB::transaction(function () use ($shippingId, $addressId, $description, $shippingDate, $items, $audits, $couponCode, $orderId) {
             $order = app('order')::findOrFail($orderId);

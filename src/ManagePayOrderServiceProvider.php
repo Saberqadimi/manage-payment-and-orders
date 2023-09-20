@@ -2,6 +2,7 @@
 
 namespace Advancelearn\ManagePaymentAndOrders;
 
+use Advancelearn\ManagePaymentAndOrders\Enums\AuditTypes;
 use Advancelearn\ManagePaymentAndOrders\Models\Address;
 use Advancelearn\ManagePaymentAndOrders\Models\Audit;
 use Advancelearn\ManagePaymentAndOrders\Models\Functions\OrderFunction;
@@ -33,6 +34,7 @@ class ManagePayOrderServiceProvider extends ServiceProvider
             'inventory' => Inventory::class,
             'audit' => Audit::class,
             'payment' => Payment::class,
+            'auditTypes' => AuditTypes::class
         ];
 
         foreach ($bindings as $key => $class) {
