@@ -15,8 +15,7 @@ class OrderFunction
     {
         return OrderResource::collection(app('order')::latest()->paginate(12));
     }
-
-
+    
     public function store(int $shippingId, int $addressId, string $description, array $items, string $couponCode = null)
     {
         return DB::transaction(function () use ($shippingId, $addressId, $description, $items, $couponCode) {

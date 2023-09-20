@@ -115,6 +115,7 @@ use Advancelearn\ManagePaymentAndOrders\Models\Inventory;
 And in the last step, you can receive the desired payment in the return method so that the payment is confirmed and
 confirmed Update it to confirm. First, add the following relationship to the relevant model of the product example
 
+
 ```php
     public function paymentConfirmation($user_id, $inventory_id, $quantity)
     {
