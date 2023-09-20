@@ -74,6 +74,11 @@ app('orderFunction')->store(int $shippingId, int $addressId, string $description
 
 and add nameaspace this file in top youre model :
 
+```php
+use Advancelearn\ManagePaymentAndOrders\Models\Inventory;
+```
+
+
 "Now you have created a new order in the order creation phase, so to redirect the user to the payment gateway, you need to send this order id to this method, you can check whether the order amount has already been paid or not. In case of non-payment, you can redirect the user to the payment gateway."
 
 ```php
@@ -104,10 +109,6 @@ pending status:
     'transaction_id' => //transactionId from your gateway sent request for pay,
     'amount' => $order->payment_price
 ]);
-```
-
-```php
-use Advancelearn\ManagePaymentAndOrders\Models\Inventory;
 ```
 
 #### next step
