@@ -62,20 +62,23 @@ php artisan migrate
 
 In the next step, you have to set the values of these three tables for your user and your product (the user's address, the amount of the model that will be known as the product, and the amount of costs due to the type of shipment)
 
-![img_2.png](img_2.png)
+![img_6.png](img_6.png)
+
+
 
 this table ****`adm_addresses`**** example:
 
-![img_3.png](img_3.png)
-
+![img_7.png](img_7.png)
 
 this table **_`adm_inventories`_** example:
 
-![img_4.png](img_4.png)
+![img_8.png](img_8.png)
+
 
 this table **`adm_shippings`** example:
 
-![img_5.png](img_5.png)
+![img_9.png](img_9.png)
+
 
 ##Create new Order By User Request
 "In the initial step, it's important to note that we aim to store a user's order within the system. To achieve this, we need to send the required parameters to the 'store' method of the order service package. Upon successful validation of these parameters, we will receive a response containing the order details."
