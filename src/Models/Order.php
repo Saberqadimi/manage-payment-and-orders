@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
+    use SoftDeletes;
     protected $table = "adm_orders";
+    protected $guarded = [];
 
     public function index()
     {
@@ -21,7 +24,7 @@ class Order extends Model
      */
     public function address(): BelongsTo
     {
-        return $this->belongsTo(app('address'))->withTrashed();
+        return $this->belongsTo(app('address') , 'adm_addresses_id')->withTrashed();
     }
 
     /**
@@ -29,7 +32,7 @@ class Order extends Model
      */
     public function shipping(): BelongsTo
     {
-        return $this->belongsTo(app('shipping'));
+        return $this->belongsTo(app('shipping') , 'adm_shippings_id');
     }
 
     /**

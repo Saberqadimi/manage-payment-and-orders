@@ -4,9 +4,11 @@ namespace Advancelearn\ManagePaymentAndOrders\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Address extends Model
 {
+    use SoftDeletes;
     protected $table="adm_addresses";
 
 //    public function addressType()
@@ -30,6 +32,6 @@ class Address extends Model
 
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(app('order'));
     }
 }

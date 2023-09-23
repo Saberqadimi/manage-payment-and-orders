@@ -14,8 +14,8 @@ return new class extends Migration {
     {
         Schema::create('adm_order_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id')->constrained();
-            $table->foreignId('inventory_id')->constrained();
+            $table->foreignId('order_id')->constrained('adm_orders');
+            $table->foreignId('inventory_id')->constrained('adm_inventories');
             $table->integer('quantity');
             $table->integer('price');
             $table->softDeletes();

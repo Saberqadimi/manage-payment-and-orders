@@ -61,13 +61,26 @@ We receive and send the requested parameters from the user:
 ```php
 app('orderFunction')->store(int $shippingId, int $addressId, string $description, array $items)
 ```
+####example `$items` for passed to params:
+For each model that is supposed to be able to be sold, a record must be created for it in the inventories table so that the warehouse quantity management of that model is also entered in that section, and after successful payment, a number is deducted from the number of models in that table. to be
+```php
+        $items = [
+            0 => [
+                "id" => 1,
+                "price" => 145000,
+                'quantity' => 2,
+                "inventory_id" => 1
+            ]
+        ];
+        $newOrder = app('orderFunction')->store(1, 1, "test from create new order",$items);
+```
 
 ### add this method for Relationship in your model with Inventory
 
 ```php
     public function inventories()
     {
-        return $this->morphMany(app('inventory'), 'inventories');
+        return $this->morphMany(app('inventory'), 'adm_inventories');
     }
 
 ```
@@ -158,6 +171,12 @@ create call method verifyPayAndConfirm::
         return $receipt;
     }
 ```
+##Payment status
+
+You can monitor the status of orders that have been prepared by checking each step where the new status should be documented. You can add a record related to the current stage of the order and you can reference the stage IDs from the adm_audits table.
+
+
+
 **You can call this method to get all the information about your orders**
 ```php
 app('orderFunction')->getOrders();
@@ -168,13 +187,33 @@ app('orderFunction')->show($order);
 ```
 ####Pay attention to the type of parameters
 ####You can use this method to update an order
+You can create a new record in the adm_shippings table for the types of shipping steps and prices that must be calculated for shipping, and send its ID for calculation in the store or update method. Pay attention to this example.
 ```php
-app('orderFunction')->update(int $shippingId, int $addressId, string $description, string $shippingDate, array $items, array $audits, int $orderId);
+$shippingId = app('shipping')::find(1)->pluck('id')->first();
 ```
-####You can use this method to cancel the order from the management side
 ```php
-app('orderFunction')->destroy($order)
+ $auditId = app('audit')::find(2)->toArray();
+ $items = [
+    0 => [
+        "id" => 1,
+        "price" => 145000,
+        'quantity' => 1,
+        "inventory_id" => 1
+    ]
+];
+app('orderFunction')->update(int $shippingId, int $addressId, string $description, string $shippingDate, array $items, int $audit, int $orderId);
 ```
+####You can use this method to cancel the order By User
+```php
+ $delete =  app('orderFunction')->destroyByUser($orderId);
+ return $delete;
+```
+####You can use this method to cancel the order By Admin
+```php
+  $delete =  app('orderFunction')->destroyByAdmin($orderId);
+  return $delete;
+```
+
 
 <a name="conclusion"></a>
 
