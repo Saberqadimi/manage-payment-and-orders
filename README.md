@@ -2,7 +2,7 @@
 # Advancelearn manage-payment-order
 
 
-<img src="https://banners.beyondco.de/advancelearn%2Fmanage-payment-and-orders.png?theme=dark&packageManager=composer+require&packageName=advancelearn%2Fmanage-payment-and-orders&pattern=stripes&style=style_1&description=Orders+and+payments+management+system+in+Laravel+and+the+feature+of+adding+sales+functionality+for+each+model&md=1&showWatermark=0&fontSize=100px&images=https%3A%2F%2Flaravel.com%2Fimg%2Flogomark.min.svg&widths=350" alt="advancelearn-otp-auth">
+<img src="https://banners.beyondco.de/advancelearn%2Fmanage-payment-and-orders.png?theme=light&packageManager=composer+require&packageName=advancelearn%2Fmanage-payment-and-orders&pattern=bankNote&style=style_1&description=Orders+and+payments+management+system+in+Laravel+and+the+feature+of+adding+sales+functionality+for+each+model&md=1&showWatermark=0&fontSize=100px&images=https%3A%2F%2Flaravel.com%2Fimg%2Flogomark.min.svg&widths=250&heights=auto" alt="advancelearn-otp-auth">
 
 
 <a name="introduction"></a>
@@ -52,9 +52,31 @@ Select the row number of this title from among the tags and enter it
 
 Then enter the following command to add tables in your database
 
+
 ```php 
 php artisan migrate
 ```
+
+
+**_Important_**
+
+In the next step, you have to set the values of these three tables for your user and your product (the user's address, the amount of the model that will be known as the product, and the amount of costs due to the type of shipment)
+
+![img_2.png](img_2.png)
+
+this table ****`adm_addresses`**** example:
+
+![img_3.png](img_3.png)
+
+
+this table **_`adm_inventories`_** example:
+
+![img_4.png](img_4.png)
+
+this table **`adm_shippings`** example:
+
+![img_5.png](img_5.png)
+
 ##Create new Order By User Request
 "In the initial step, it's important to note that we aim to store a user's order within the system. To achieve this, we need to send the required parameters to the 'store' method of the order service package. Upon successful validation of these parameters, we will receive a response containing the order details."
 We receive and send the requested parameters from the user:
