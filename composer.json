@@ -1,5 +1,6 @@
 {
     "name": "advancelearn/manage-payment-and-orders",
+    "license": "MIT",
     "description": "Orders and payments management system in Laravel and the feature of adding sales functionality for each model",
     "keywords": [
         "order",
