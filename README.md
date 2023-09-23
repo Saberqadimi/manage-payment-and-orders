@@ -48,7 +48,7 @@ Select the row number of this title from among the tags and enter it
 
 #### By entering the tag number of the image above, these tables will be added to the tables folder of your program
 
-![img_1.png](img_1.png)
+![img_1.png](./assets/images/img_1.png)
 
 Then enter the following command to add tables in your database
 
@@ -62,22 +62,22 @@ php artisan migrate
 
 In the next step, you have to set the values of these three tables for your user and your product (the user's address, the amount of the model that will be known as the product, and the amount of costs due to the type of shipment)
 
-![img_6.png](img_6.png)
+![img_6.png](./assets/images/img_6.png)
 
 
 
 this table ****`adm_addresses`**** example:
 
-![img_7.png](img_7.png)
+![img_7.png](./assets/images/img_7.png)
 
 this table **_`adm_inventories`_** example:
 
-![img_8.png](img_8.png)
+![img_8.png](./assets/images/img_8.png)
 
 
 this table **`adm_shippings`** example:
 
-![img_9.png](img_9.png)
+![img_9.png](./assets/images/img_9.png)
 
 
 ##Create new Order By User Request
@@ -86,7 +86,7 @@ We receive and send the requested parameters from the user:
 `$shippingId , $addressId , $description , $items`
 **`__!!Pay attention to the type of parameters that they should be__`**
 ```php
-app('orderFunction')->store(int $shippingId, int $addressId, string $description, array $items)
+app('orderFunction')->store(int $shippingId, int $addressId, string $description, array $items);
 ```
 ####example `$items` for passed to params:
 For each model that is supposed to be able to be sold, a record must be created for it in the inventories table so that the warehouse quantity management of that model is also entered in that section, and after successful payment, a number is deducted from the number of models in that table. to be
@@ -111,13 +111,6 @@ For each model that is supposed to be able to be sold, a record must be created 
     }
 
 ```
-
-and add nameaspace this file in top youre model :
-
-```php
-use Advancelearn\ManagePaymentAndOrders\Models\Inventory;
-```
-
 
 "Now you have created a new order in the order creation phase, so to redirect the user to the payment gateway, you need to send this order id to this method, you can check whether the order amount has already been paid or not. In case of non-payment, you can redirect the user to the payment gateway."
 

@@ -57,7 +57,6 @@ Route::prefix('api')->group(function () {
 //       $delete =  app('orderFunction')->destroyByAdmin($orderId);
 //        return $delete;
 
-        dd(app('shipping')::find(1)->pluck('id')->first());
     });
 
 });
