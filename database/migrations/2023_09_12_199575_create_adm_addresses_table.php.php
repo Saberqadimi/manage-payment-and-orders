@@ -12,15 +12,12 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('adm_orders', function (Blueprint $table) {
+        Schema::create('adm_addresses', function (Blueprint $table) {
             $table->id();
-            $table->string('order_number');
-            $table->foreignId('address_id')->constrained()->nullable();
-            $table->foreignId('shipping_id')->constrained();
-            $table->integer('shipping_price');
-            $table->integer('tax')->default(0);
+            $table->bigInteger('user_id')->nullable()->unsigned()->index();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            $table->string('address');
             $table->string('description');
-            $table->date('shipping_date')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -33,6 +30,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('adm_orders');
+        Schema::dropIfExists('adm_addresses');
     }
 };

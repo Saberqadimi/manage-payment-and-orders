@@ -25,8 +25,8 @@ class AddressResource extends JsonResource
             'phone'=>$this->phone,
             'user'=>$this->user()->get()->first(),
             'user_id'=>$this->user_id,
-            'city'=>$this->city()->with('province')->get()->first(),
-            'city_id'=>$this->city_id,
+//            'city'=>$this->city()->with('province')->get()->first(),
+//            'city_id'=>$this->city_id,
             'description' => $this->description,
         ];
     }

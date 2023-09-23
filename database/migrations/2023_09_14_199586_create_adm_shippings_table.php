@@ -14,10 +14,10 @@ return new class extends Migration {
     {
         Schema::create('adm_shippings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id');
-            $table->foreignId('audit_id');
+            $table->string('title');
             $table->string('description');
-            $table->timestamps();
+            $table->integer('price');
+            $table->softDeletes();
         });
     }
 

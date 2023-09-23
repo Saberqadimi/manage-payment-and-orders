@@ -25,7 +25,7 @@ class Inventory extends Model
 
     public function orderItems(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->hasMany(app('orderItem'));
     }
 
 }
