@@ -114,13 +114,17 @@ For each model that is supposed to be able to be sold, a record must be created 
 
 "Now you have created a new order in the order creation phase, so to redirect the user to the payment gateway, you need to send this order id to this method, you can check whether the order amount has already been paid or not. In case of non-payment, you can redirect the user to the payment gateway."
 
+write this namespace in your class:
 ```php
-        $order = app('order')::findOrFail($orderId);
+use Advancelearn\ManagePaymentAndOrders\Enums\AuditTypes; 
+```
+```php
+$order = app('order')::findOrFail($orderId);
 
-        if ($order->audits->where('id', app('auditTypes')::PAID)->count()) {
-            return response()->json(['errors' => 'Already paid'], 422);
-        }
-
+if ($order->audits->where('id', AuditTypes::PAID)->count()) {
+    return response()->json(['errors' => 'Already paid'], 422);
+}
+    
 ```
 
 And finally, send the final order amount to send to the portal:
@@ -199,7 +203,8 @@ You can monitor the status of orders that have been prepared by checking each st
 
 **You can call this method to get all the information about your orders**
 ```php
-app('orderFunction')->getOrders();
+$paginateCount = 6;
+app('orderFunction')->getOrders($paginateCount);
 ```
 **Use this method to display individual information of an order**
 ```php
