@@ -220,7 +220,10 @@ paymentConfirmation.
 ```
 
 create call method verifyPayAndConfirm::
-
+write this namespace in your class:
+```php
+use Advancelearn\ManagePaymentAndOrders\Enums\AuditTypes; 
+```
 ```php
     private function verifyPayAndConfirm($receipt, $payment, Request $request): void
     {
@@ -228,7 +231,7 @@ create call method verifyPayAndConfirm::
         $payment->transaction = $request->all();
         $payment->driver = $receipt->getDriver();
         $payment->save();
-        $order->audits()->attach([app('auditTypes')::PAID => ['description' => 'Payment was successful']]);
+        $order->audits()->attach([AuditTypes::PAID => ['description' => 'Payment was successful']]);
         foreach ($order->items as $item) {
             //this method called fromAnd finally, this
             // method reaches the method that we implemented
@@ -269,7 +272,9 @@ $shippingId = app('shipping')::find(1)->pluck('id')->first();
         "inventory_id" => 1
     ]
 ];
-app('orderFunction')->update(int $shippingId, int $addressId, string $description, string $shippingDate, array $items, int $audit, int $orderId);
+$updateOrder = app('orderFunction')->update(int $shippingId, int $addressId, string $description, string $shippingDate, array $items, int $audit, int $orderId);
+
+return $updateOrder;
 #params => shippingId , $addressId , $description , $shippingDate , $items , $auditID , $orderId
 ```
 ##Important

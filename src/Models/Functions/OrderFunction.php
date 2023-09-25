@@ -43,8 +43,7 @@ class OrderFunction
             $shipping = app('shipping')::findOrFail($shippingId);
             $address = app('address')::findOrFail($addressId);
             $items = $this->filterItemsByInventory($items);
-            if (count($items) > 0)
-            {
+            if (count($items) > 0) {
                 $order = $this->createOrder($description, $address, $shipping);
                 $orderItems = $this->prepareOrderItems($items);
 
@@ -168,18 +167,23 @@ class OrderFunction
      * @param string|null $couponCode
      * @return mixed
      */
-    public function update(int $shippingId, int $addressId, string $description, string $shippingDate, array $items, int $auditId, int $orderId, string $couponCode = null): mixed
+    public function update(int $shippingId, int $addressId, string $description, string $shippingDate, array $items, int $auditId, int $orderId, string $couponCode = null)
     {
         return DB::transaction(function () use ($shippingId, $addressId, $description, $shippingDate, $items, $auditId, $orderId, $couponCode) {
-            $order = $this->findOrderById($orderId);
-            $filteredItems = $this->filterItemsByInventory($items);
-            $this->updateOrderDetails($order, $addressId, $description, $shippingId, $shippingDate);
-            $this->updateOrderItems($order, $filteredItems);
-            $this->updateOrderAudits($order, $auditId);
+            try {
+                $order = $this->findOrderById($orderId);
+                $filteredItems = $this->filterItemsByInventory($items);
+                $this->updateOrderDetails($order, $addressId, $description, $shippingId, $shippingDate);
+                $this->updateOrderItems($order, $filteredItems);
+                $this->updateOrderAudits($order, $auditId);
 
-            return new OrderResource($order);
+                return new OrderResource($order);
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()]);
+            }
         });
     }
+
 
     /**
      * Find an order by its ID.
@@ -204,12 +208,10 @@ class OrderFunction
     private function updateOrderDetails($order, int $addressId, string $description, int $shippingId, string $shippingDate)
     {
         $order->description = $description;
-        $order->adm_addresses_id = $addressId;
-
-        if ($order->address->city_id && $shipping = app('shipping')::find($shippingId)) {
-            $order->adm_shippings_id = $shipping->id;
-            $order->shipping_price = $shipping->price;
-        }
+        $order->adm_addresses_id = $addressId ?? $order->adm_addresses_id;
+        $shipping = app('shipping')::find($shippingId);
+        $order->adm_shippings_id = $shipping->id ?? $order->adm_shippings_id;
+        $order->shipping_price = $shipping->price ?? $order->shipping_price;
 
         $order->shipping_date = $shippingDate;
     }
@@ -270,7 +272,6 @@ class OrderFunction
     }
 
 
-
     /**
      * @param $order
      * @return JsonResponseAlias
@@ -315,17 +316,17 @@ class OrderFunction
 
     public function getAuditForUpdate($auditId): array
     {
-        return match ($auditId){
-            AuditTypes::ORDER_CONFIRMATION =>  [AuditTypes::ORDER_CONFIRMATION => ['description' => 'order confirmation by admin']],
-            AuditTypes::INVENTORY_CONFIRMATION =>  [AuditTypes::INVENTORY_CONFIRMATION => ['description' => 'order inventories confirmation']],
-            AuditTypes::READY_TO_SHIPPING =>  [AuditTypes::READY_TO_SHIPPING => ['description' => 'Ready to ship']],
-            AuditTypes::SHIPPED =>  [AuditTypes::SHIPPED => ['description' => 'order Sent']],
-            AuditTypes::CANCELLED_BY_ADMIN =>  [AuditTypes::CANCELLED_BY_ADMIN => ['description' => 'order canceled by admin']],
-            AuditTypes::CANCELLED_BY_USER =>  [AuditTypes::CANCELLED_BY_USER => ['description' => 'order canceled by user']],
-            AuditTypes::DELIVERED =>  [AuditTypes::DELIVERED => ['description' => 'order DELIVERED']],
-            AuditTypes::EDIT =>  [AuditTypes::EDIT => ['description' => 'order is edited']],
-            AuditTypes::PAID =>  [AuditTypes::PAID => ['description' => 'order is paid']],
-            AuditTypes::REMOVE_BY_SYSTEM =>  [AuditTypes::REMOVE_BY_SYSTEM => ['description' => 'order REMOVE BY SYSTEM']],
+        return match ($auditId) {
+            AuditTypes::ORDER_CONFIRMATION => [AuditTypes::ORDER_CONFIRMATION => ['description' => 'order confirmation by admin']],
+            AuditTypes::INVENTORY_CONFIRMATION => [AuditTypes::INVENTORY_CONFIRMATION => ['description' => 'order inventories confirmation']],
+            AuditTypes::READY_TO_SHIPPING => [AuditTypes::READY_TO_SHIPPING => ['description' => 'Ready to ship']],
+            AuditTypes::SHIPPED => [AuditTypes::SHIPPED => ['description' => 'order Sent']],
+            AuditTypes::CANCELLED_BY_ADMIN => [AuditTypes::CANCELLED_BY_ADMIN => ['description' => 'order canceled by admin']],
+            AuditTypes::CANCELLED_BY_USER => [AuditTypes::CANCELLED_BY_USER => ['description' => 'order canceled by user']],
+            AuditTypes::DELIVERED => [AuditTypes::DELIVERED => ['description' => 'order DELIVERED']],
+            AuditTypes::EDIT => [AuditTypes::EDIT => ['description' => 'order is edited']],
+            AuditTypes::PAID => [AuditTypes::PAID => ['description' => 'order is paid']],
+            AuditTypes::REMOVE_BY_SYSTEM => [AuditTypes::REMOVE_BY_SYSTEM => ['description' => 'order REMOVE BY SYSTEM']],
         };
 
     }
