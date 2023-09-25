@@ -57,6 +57,29 @@ Then enter the following command to add tables in your database
 ```php 
 php artisan migrate
 ```
+##Now you need to follow these steps to initialize Audits in the program
+```php
+php artisan vendor:publish
+```
+Select the row number of this title from among the tags and enter it
+```php
+Tag: AdvanceLearnManagePayAndOrder-seeds .....
+```
+The AuditSeeder seeder file is now created in the Seeders folder of your application Now edit your DatabaseSeeder file
+```php
+    public function run()
+    {
+        $this->call([
+            AuditSeeder::class
+        ]);
+
+    }
+```
+And now enter this command in the terminal
+```php
+php artisan db:seed --class=AuditSeeder
+```
+Adding the value for the table of order stages in the database until we can use the ID of these records when updating according to each stage of the order we wanted.
 
 
 **_Important_**
@@ -87,18 +110,20 @@ We receive and send the requested parameters from the user:
 `$shippingId , $addressId , $description , $items`
 **`__!!Pay attention to the type of parameters that they should be__`**
 ```php
+$items = [
+    0 => [
+        'quantity' => 1,
+        "inventory_id" => 2
+    ]
+];
+        
 app('orderFunction')->store(int $shippingId, int $addressId, string $description, array $items);
-```
-####example `$items` for passed to params:
-For each model that is supposed to be able to be sold, a record must be created for it in the inventories table so that the warehouse quantity management of that model is also entered in that section, and after successful payment, a number is deducted from the number of models in that table. to be
-```php
-        $items = [
-            0 => [
-                'quantity' => 2,
-                "inventory_id" => 1
-            ]
-        ];
-        $newOrder = app('orderFunction')->store(1, 1, "test from create new order",$items);
+#params :
+# shippingId => Type of shipment,
+# $addressId => The address ID stored for the user in the address table ,
+# $description => create new order by user example .... ,
+# $items =>  Enter the product order number and inventory ID for the corresponding model
+
 ```
 
 ### add this method for Relationship in your model with Inventory

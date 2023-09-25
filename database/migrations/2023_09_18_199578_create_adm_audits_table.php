@@ -15,7 +15,7 @@ return new class extends Migration {
         Schema::create('adm_audits', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->integer('sequence')->nullable();
+            $table->timestamps();
         });
     }
 

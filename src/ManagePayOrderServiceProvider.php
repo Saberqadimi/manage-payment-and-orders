@@ -2,7 +2,6 @@
 
 namespace Advancelearn\ManagePaymentAndOrders;
 
-use Advancelearn\ManagePaymentAndOrders\Enums\AuditTypes;
 use Advancelearn\ManagePaymentAndOrders\Models\Address;
 use Advancelearn\ManagePaymentAndOrders\Models\Audit;
 use Advancelearn\ManagePaymentAndOrders\Models\Functions\OrderFunction;
@@ -11,6 +10,7 @@ use Advancelearn\ManagePaymentAndOrders\Models\Order;
 use Advancelearn\ManagePaymentAndOrders\Models\Payment;
 use Advancelearn\ManagePaymentAndOrders\Models\Shipping;
 use Illuminate\Support\ServiceProvider;
+
 
 class ManagePayOrderServiceProvider extends ServiceProvider
 {
@@ -22,6 +22,10 @@ class ManagePayOrderServiceProvider extends ServiceProvider
         $this->publishes([
             $this->basePath('database/migrations') => database_path('migrations')
         ], 'AdvanceLearnManagePayAndOrder-migrations');
+
+        $this->publishes([
+            $this->basePath('src/Seed/') => database_path('seeders')
+        ], 'AdvanceLearnManagePayAndOrder-seeds');
     }
 
     public function register()
