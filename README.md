@@ -57,7 +57,7 @@ Then enter the following command to add tables in your database
 ```php 
 php artisan migrate
 ```
-##Now you need to follow these steps to initialize Audits in the program
+###Now you need to follow these steps to initialize Audits in the program
 ```php
 php artisan vendor:publish
 ```
@@ -67,6 +67,13 @@ Tag: AdvanceLearnManagePayAndOrder-seeds .....
 ```
 The AuditSeeder seeder file is now created in the Seeders folder of your application Now edit your DatabaseSeeder file
 ```php
+class DatabaseSeeder extends Seeder
+{
+    /**
+     * Seed the application's database.
+     *
+     * @return void
+     */
     public function run()
     {
         $this->call([
@@ -74,6 +81,8 @@ The AuditSeeder seeder file is now created in the Seeders folder of your applica
         ]);
 
     }
+}
+
 ```
 And now enter this command in the terminal
 ```php

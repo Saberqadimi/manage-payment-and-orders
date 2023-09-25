@@ -24,7 +24,7 @@ class ManagePayOrderServiceProvider extends ServiceProvider
         ], 'AdvanceLearnManagePayAndOrder-migrations');
 
         $this->publishes([
-            $this->basePath('src/Seed/') => database_path('seeders')
+            $this->basePath('database/Seed/') => database_path('seeders')
         ], 'AdvanceLearnManagePayAndOrder-seeds');
     }
 
