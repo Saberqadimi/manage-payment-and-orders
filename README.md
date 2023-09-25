@@ -4,6 +4,7 @@
 
 <img src="https://banners.beyondco.de/advancelearn%2Fmanage-payment-and-orders.png?theme=light&packageManager=composer+require&packageName=advancelearn%2Fmanage-payment-and-orders&pattern=bankNote&style=style_1&description=Orders+and+payments+management+system+in+Laravel+and+the+feature+of+adding+sales+functionality+for+each+model&md=1&showWatermark=0&fontSize=100px&images=https%3A%2F%2Flaravel.com%2Fimg%2Flogomark.min.svg&widths=250&heights=auto" alt="advancelearn-otp-auth">
 
+[![Latest Stable Version](http://poser.pugx.org/advancelearn/manage-payment-and-orders/v)](https://packagist.org/packages/advancelearn/manage-payment-and-orders) [![Total Downloads](http://poser.pugx.org/advancelearn/manage-payment-and-orders/downloads)](https://packagist.org/packages/advancelearn/manage-payment-and-orders) [![Latest Unstable Version](http://poser.pugx.org/advancelearn/manage-payment-and-orders/v/unstable)](https://packagist.org/packages/advancelearn/manage-payment-and-orders) [![License](http://poser.pugx.org/advancelearn/manage-payment-and-orders/license)](https://packagist.org/packages/advancelearn/manage-payment-and-orders) [![PHP Version Require](http://poser.pugx.org/advancelearn/manage-payment-and-orders/require/php)](https://packagist.org/packages/advancelearn/manage-payment-and-orders)
 
 <a name="introduction"></a>
 
