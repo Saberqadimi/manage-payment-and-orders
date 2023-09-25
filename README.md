@@ -93,8 +93,6 @@ For each model that is supposed to be able to be sold, a record must be created 
 ```php
         $items = [
             0 => [
-                "id" => 1,
-                "price" => 145000,
                 'quantity' => 2,
                 "inventory_id" => 1
             ]
@@ -109,6 +107,26 @@ For each model that is supposed to be able to be sold, a record must be created 
     {
         return $this->morphMany(app('inventory'), 'adm_inventories');
     }
+
+```
+### After add RelationShip:
+
+"After integrating your model with the inventory model, it is essential to implement this contract within your model. This allows you to execute various actions, such as sending emails or updating your model, during the successful payment phase. Additionally, you can seamlessly update the Inventory associated with the sold record in your model."
+
+
+```php
+use Advancelearn\ManagePaymentAndOrders\PaymentConfirmationInterface;
+
+class Product extends Model implements PaymentConfirmationInterface
+{
+    //you're methods or logic
+    
+    //added this method after implemention:
+    public function paymentConfirmation($user_id, $inventory_id, $quantity)
+    {
+        //you're added logic after paymentConfirmation
+    }
+}
 
 ```
 
@@ -148,20 +166,7 @@ pending status:
 ]);
 ```
 
-#### next step
 
-And in the last step, you can receive the desired payment in the return method so that the payment is confirmed and
-confirmed Update it to confirm. First, add the following relationship to the relevant model of the product example
-
-
-```php
-    public function paymentConfirmation($user_id, $inventory_id, $quantity)
-    {
-        $inventory = $this->inventories()->find($inventory_id);
-        $inventory->count -= $quantity;
-        $inventory->save();
-    }
-```
 
 And for example, in your callback method that returns from the portal, let's assume that your callback method is called
 paymentConfirmation.
@@ -190,6 +195,9 @@ create call method verifyPayAndConfirm::
         $payment->save();
         $order->audits()->attach([app('auditTypes')::PAID => ['description' => 'Payment was successful']]);
         foreach ($order->items as $item) {
+            //this method called fromAnd finally, this
+            // method reaches the method that we implemented
+            // in the corresponding model of the interface 
             $item->PaymentConfirmation($order->address->user_id);
         }
         return $receipt;
@@ -227,7 +235,10 @@ $shippingId = app('shipping')::find(1)->pluck('id')->first();
     ]
 ];
 app('orderFunction')->update(int $shippingId, int $addressId, string $description, string $shippingDate, array $items, int $audit, int $orderId);
+#params => shippingId , $addressId , $description , $shippingDate , $items , $auditID , $orderId
 ```
+##Important
+Remember that the address ID you enter for updating must be related to **_`the user who made the purchase`_**, because we reach the user from the address in the codes.
 ####You can use this method to cancel the order By User
 ```php
  $delete =  app('orderFunction')->destroyByUser($orderId);

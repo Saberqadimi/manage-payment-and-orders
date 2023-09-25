@@ -16,6 +16,7 @@ class OrderFunction
 
     const descAuditStore = "Initial order registration";
     const descDestroy = 'It is not possible to delete the order, only the status of the order was changed to canceled.';
+    const orderNotRegistered = "The number of order registration requests is more than the stock of the product in the warehouse and your order was not registered";
 
     /**
      * @param $paginateCount
@@ -41,21 +42,26 @@ class OrderFunction
         return DB::transaction(function () use ($shippingId, $addressId, $description, $items, $couponCode) {
             $shipping = app('shipping')::findOrFail($shippingId);
             $address = app('address')::findOrFail($addressId);
-            $order = $this->createOrder($description, $address, $shipping);
+            $items = $this->filterItemsByInventory($items);
+            if (count($items) > 0)
+            {
+                $order = $this->createOrder($description, $address, $shipping);
+                $orderItems = $this->prepareOrderItems($items);
 
-            $orderItems = $this->prepareOrderItems($items);
+                $this->syncOrderItems($order, $orderItems);
 
-            $this->syncOrderItems($order, $orderItems);
+                $amount = $this->getOrderAmount($order);
 
-            $amount = $this->getOrderAmount($order);
+                $this->updateOrderPrices($order, $amount);
 
-            $this->updateOrderPrices($order, $amount);
+                $this->attachAudit($order);
 
-            $this->attachAudit($order);
-
-            return new OrderResource($order);
+                return new OrderResource($order);
+            }
+            return response()->json(['errors' => self::orderNotRegistered], 422);
         });
     }
+
 
     /**
      * Generate a unique order number.
@@ -64,7 +70,7 @@ class OrderFunction
      */
     private function generateOrderNumber(): string
     {
-        return dechex(time()) . '-' . dechex(Auth::user()->id);
+        return dechex(time()) . '-' . dechex(3);
     }
 
     /**
@@ -166,9 +172,9 @@ class OrderFunction
     {
         return DB::transaction(function () use ($shippingId, $addressId, $description, $shippingDate, $items, $auditId, $orderId, $couponCode) {
             $order = $this->findOrderById($orderId);
-
+            $filteredItems = $this->filterItemsByInventory($items);
             $this->updateOrderDetails($order, $addressId, $description, $shippingId, $shippingDate);
-            $this->updateOrderItems($order, $items);
+            $this->updateOrderItems($order, $filteredItems);
             $this->updateOrderAudits($order, $auditId);
 
             return new OrderResource($order);
@@ -246,6 +252,24 @@ class OrderFunction
     }
 
 
+    /**
+     * @param array $items
+     * @return array
+     */
+    private function filterItemsByInventory(array $items): array
+    {
+        $filteredItems = array_filter($items, function ($item) {
+            $inventory = app('inventory')::find($item['inventory_id']);
+            if ($inventory && $inventory->count >= $item['quantity']) {
+                return true;
+            }
+            return false;
+        });
+
+        return array_values($filteredItems);
+    }
+
+
 
     /**
      * @param $order
@@ -282,9 +306,9 @@ class OrderFunction
 
         foreach ($order->items as &$item) {
             $orderPrice += $item->pivot->quantity * $item->pivot->price;
-            if ($order->shipping_price > 0) {
-                $orderPrice += $order->shipping_price;
-            }
+        }
+        if ($order->shipping_price > 0) {
+            $orderPrice += $order->shipping_price;
         }
         return $orderPrice;
     }

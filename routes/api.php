@@ -22,11 +22,14 @@ Route::prefix('api')->group(function () {
         /** store new order $items ******************************************/
 //        $items = [
 //            0 => [
-//                "id" => 1,
-//                "price" => 145000,
 //                'quantity' => 2,
 //                "inventory_id" => 1
-//            ]
+//            ],
+//            1 => [
+//                'quantity' => 2,
+//                "inventory_id" => 2
+//            ],
+//
 //        ];
 //        $newOrder = app('orderFunction')->store(1, 1, "test from create new order",$items);
 //
@@ -38,18 +41,17 @@ Route::prefix('api')->group(function () {
 //
 //        return $order;
         /**************************************/
-//        $items = [
-//            0 => [
-//                "id" => 1,
-//                "price" => 145000,
-//                'quantity' => 1,
-//                "inventory_id" => 1
-//            ]
-//        ];
-//        $auditId = app('audit')::find(2)->toArray();
-//        $update = app('orderFunction')->update(1, 1, "update order for test", "2023-09-28 10:01:03",$items , $auditId['id'], 14);
-//
-//        return $update;
+        $items = [
+            0 => [
+                'quantity' => 1,
+                "inventory_id" => 2
+            ]
+        ];
+        $auditId = app('audit')::find(2)->toArray();
+        $update = app('orderFunction')->update(1, 3, "update order for test", "2023-09-28 10:01:03",$items , $auditId['id'], 37);
+        #params => shippingId , $addressId , $description , $shippingDate , $items , $auditID , $orderId
+
+        return $update;
 
 //       $delete =  app('orderFunction')->destroyByUser($orderId);
 //        return $delete;
