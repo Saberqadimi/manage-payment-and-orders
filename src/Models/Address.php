@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Address extends Model
 {
     use SoftDeletes;
-    protected $table="adm_addresses";
+
+    protected $table = "adm_addresses";
 
 //    public function addressType()
 //    {
@@ -29,6 +30,10 @@ class Address extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function city()
+    {
+        return $this->belongsTo(app('city'));
+    }
 
     public function orders()
     {

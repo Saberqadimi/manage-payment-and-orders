@@ -16,6 +16,8 @@ return new class extends Migration {
             $table->id();
             $table->bigInteger('user_id')->nullable()->unsigned()->index();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            $table->bigInteger('adm_city_id')->nullable()->unsigned()->index();
+            $table->foreign('adm_city_id')->references('id')->on('adm_cities')->onDelete('set null');
             $table->string('address');
             $table->string('description');
             $table->softDeletes();

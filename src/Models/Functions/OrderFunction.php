@@ -209,10 +209,11 @@ class OrderFunction
     {
         $order->description = $description;
         $order->adm_addresses_id = $addressId ?? $order->adm_addresses_id;
-        $shipping = app('shipping')::find($shippingId);
-        $order->adm_shippings_id = $shipping->id ?? $order->adm_shippings_id;
-        $order->shipping_price = $shipping->price ?? $order->shipping_price;
-
+        if ($order->address->adm_city_id) {
+            $shipping = app('shipping')::find($shippingId);
+            $order->adm_shippings_id = $shipping->id;
+            $order->shipping_price = $shipping->price;
+        }
         $order->shipping_date = $shippingDate;
     }
 
@@ -308,7 +309,7 @@ class OrderFunction
         foreach ($order->items as &$item) {
             $orderPrice += $item->pivot->quantity * $item->pivot->price;
         }
-        if ($order->shipping_price > 0) {
+        if ($order->address->adm_city_id) {
             $orderPrice += $order->shipping_price;
         }
         return $orderPrice;

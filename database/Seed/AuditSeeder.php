@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Advancelearn\ManagePaymentAndOrders\Models\Audit;
 use Illuminate\Database\Seeder;
 
 class AuditSeeder extends Seeder
@@ -25,7 +24,7 @@ class AuditSeeder extends Seeder
         ];
 
         foreach ($audits as $audit) {
-            Audit::create($audit);
+            app('audit')::create($audit);
         }
     }
 }

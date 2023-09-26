@@ -4,10 +4,12 @@ namespace Advancelearn\ManagePaymentAndOrders;
 
 use Advancelearn\ManagePaymentAndOrders\Models\Address;
 use Advancelearn\ManagePaymentAndOrders\Models\Audit;
+use Advancelearn\ManagePaymentAndOrders\Models\City;
 use Advancelearn\ManagePaymentAndOrders\Models\Functions\OrderFunction;
 use Advancelearn\ManagePaymentAndOrders\Models\Inventory;
 use Advancelearn\ManagePaymentAndOrders\Models\Order;
 use Advancelearn\ManagePaymentAndOrders\Models\Payment;
+use Advancelearn\ManagePaymentAndOrders\Models\Province;
 use Advancelearn\ManagePaymentAndOrders\Models\Shipping;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,8 +26,9 @@ class ManagePayOrderServiceProvider extends ServiceProvider
         ], 'AdvanceLearnManagePayAndOrder-migrations');
 
         $this->publishes([
-            $this->basePath('database/Seed/') => database_path('seeders')
+            $this->basePath('database/Seed/') => database_path('seeders'),
         ], 'AdvanceLearnManagePayAndOrder-seeds');
+
     }
 
     public function register()
@@ -38,6 +41,8 @@ class ManagePayOrderServiceProvider extends ServiceProvider
             'inventory' => Inventory::class,
             'audit' => Audit::class,
             'payment' => Payment::class,
+            'city' => City::class,
+            'province' => Province::class,
         ];
 
         foreach ($bindings as $key => $class) {

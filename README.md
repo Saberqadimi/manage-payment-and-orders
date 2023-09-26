@@ -15,6 +15,9 @@ and manage various aspects related to user orders and payments. It includes trac
 all steps of the user's purchase order." This package is currently under active development and there are plans to add a
 shopping voucher module in the future, pending support and feasibility.
 
+
+By installing this package and during the next steps, tables of address, country, province, city, order items, order registration steps, order shipping cost, inventory and price, orders, payments will be created for you. And with the help of seder, you value some tables and you can easily have the country of Iran along with its provinces and cities in your database.
+
 <a name="installation"></a>
 
 ## Installation
@@ -49,7 +52,7 @@ Select the row number of this title from among the tags and enter it
 
 #### By entering the tag number of the image above, these tables will be added to the tables folder of your program
 
-![img_1.png](./assets/images/img_1.png)
+![img.png](assets/images/img.png)
 
 Then enter the following command to add tables in your database
 
@@ -65,29 +68,10 @@ Select the row number of this title from among the tags and enter it
 ```php
 Tag: AdvanceLearnManagePayAndOrder-seeds .....
 ```
-The AuditSeeder seeder file is now created in the Seeders folder of your application Now edit your DatabaseSeeder file
-```php
-class DatabaseSeeder extends Seeder
-{
-    /**
-     * Seed the application's database.
-     *
-     * @return void
-     */
-    public function run()
-    {
-        $this->call([
-            AuditSeeder::class
-        ]);
+Enter the commands in order according to the picture
 
-    }
-}
+![img.png](assets/images/imgSeeders.png)
 
-```
-And now enter this command in the terminal
-```php
-php artisan db:seed --class=AuditSeeder
-```
 Adding the value for the table of order stages in the database until we can use the ID of these records when updating according to each stage of the order we wanted.
 
 
@@ -95,8 +79,7 @@ Adding the value for the table of order stages in the database until we can use 
 
 In the next step, you have to set the values of these three tables for your user and your product (the user's address, the amount of the model that will be known as the product, and the amount of costs due to the type of shipment)
 
-![img_6.png](./assets/images/img_6.png)
-
+![img_7.png](./assets/images/tables.png)
 
 
 this table ****`adm_addresses`**** example:
@@ -266,8 +249,6 @@ $shippingId = app('shipping')::find(1)->pluck('id')->first();
  $auditId = app('audit')::find(2)->toArray();
  $items = [
     0 => [
-        "id" => 1,
-        "price" => 145000,
         'quantity' => 1,
         "inventory_id" => 1
     ]
