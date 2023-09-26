@@ -275,7 +275,7 @@ Remember that the address ID you enter for updating must be related to **_`the u
   return $delete;
 ```
 You can display the list of orders and payments to the admin and to the user who is logged in with the help of these methods and passing the required parameters.
-##get Orders List Or SingleOrder
+## get Orders List Or SingleOrder
 ```php
         return app('orderFunction')->getOrders(); // get Order List for AdminPanel
         return app('orderFunction')->singleOrder(5); // get singleOrder for AdminPanel
@@ -284,7 +284,7 @@ You can display the list of orders and payments to the admin and to the user who
         return app('orderFunction')->SingleOrderOfTheLoggedInUser(5); //get user Authenticated singleOrder
 ```
 
-##get Payments List Or SinglePayment
+## get Payments List Or SinglePayment
 ```php
        return app('paymentFunction')->getPayments(); // get PaymentList for AdminPanel
 
