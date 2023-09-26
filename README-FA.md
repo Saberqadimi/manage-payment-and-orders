@@ -1,5 +1,6 @@
 <div dir=rtl>
-# Advancelearn manage-payment-order
+
+#Advancelearn manage-payment-order
 
 
 <img src="https://banners.beyondco.de/advancelearn%2Fmanage-payment-and-orders.png?theme=light&packageManager=composer+require&packageName=advancelearn%2Fmanage-payment-and-orders&pattern=bankNote&style=style_1&description=Orders+and+payments+management+system+in+Laravel+and+the+feature+of+adding+sales+functionality+for+each+model&md=1&showWatermark=0&fontSize=100px&images=https%3A%2F%2Flaravel.com%2Fimg%2Flogomark.min.svg&widths=250&heights=auto" alt="advancelearn-otp-auth">
@@ -14,7 +15,7 @@
 
 ## مقدمه
 
-این پکیج به همکاری با یکی از اعضای تیم Sadratek و AdvanceLearn توسعه داده شده است. هدف اصلی این پکیج ایجاد و مدیریت جنبه‌های مختلف مرتبط با سفارش‌ها و پرداخت‌های کاربر است. این شامل پیگیری تعداد محصولات و برچسب‌گذاری تمام مراحل سفارش خرید کاربر می‌شود. این پکیج در حال حاضر در دست توسعه فعال است و برنامه‌هایی برای افزودن یک ماژول کارت هدیه در آینده وجود دارد که منتظر پشتیبانی و امکان‌پذیری است.
+این پکیج به همکاری با یکی از اعضای تیم Sadratech و AdvanceLearn توسعه داده شده است. هدف اصلی این پکیج ایجاد و مدیریت جنبه‌های مختلف مرتبط با سفارش‌ها و پرداخت‌های کاربر است. این شامل پیگیری تعداد محصولات و برچسب‌گذاری تمام مراحل سفارش خرید کاربر می‌شود. این پکیج در حال حاضر در دست توسعه فعال است و برنامه‌هایی برای افزودن یک ماژول کارت هدیه در آینده وجود دارد که منتظر پشتیبانی و امکان‌پذیری است.
 
 با نصب این پکیج و در مراحل بعدی، جداول آدرس، کشور، استان، شهر، موارد سفارش، مراحل ثبت سفارش، هزینه ارسال سفارش، موجودی و قیمت، سفارش‌ها، پرداخت‌ها برای شما ایجاد می‌شود. و با کمک سیدر، می‌توانید برخی از جداول را پر کنید و به راحتی کشور ایران به همراه استان‌ها و شهرهای آن را در پایگاه داده خود داشته باشید.
 
@@ -268,6 +269,28 @@ return $updateOrder;
   $delete =  app('orderFunction')->destroyByAdmin($orderId);
   return $delete;
 ```
+شما می‌توانید با استفاده از این متدها و ارسال پارامترهای مورد نیاز، لیست سفارش‌ها و پرداخت‌ها را برای مدیر و کاربری که وارد شده است نمایش دهید.
+
+## دریافت لیست سفارش‌ها یا یک سفارش تکی
+```php
+        return app('orderFunction')->getOrders(); // دریافت لیست سفارش‌ها برای پنل مدیریت
+        return app('orderFunction')->singleOrder(5); // دریافت یک سفارش تکی برای پنل مدیریت
+
+        return app('orderFunction')->ordersOfTheLoggedInUser(); // دریافت لیست سفارش‌های کاربر وارد شده
+        return app('orderFunction')->SingleOrderOfTheLoggedInUser(5); // دریافت یک سفارش تکی کاربر وارد شده
+```
+
+## دریافت لیست پرداخت‌ها یا یک پرداخت تکی
+```php
+       return app('paymentFunction')->getPayments(); // دریافت لیست پرداخت‌ها برای پنل مدیریت
+
+       return app('paymentFunction')->singlePayment(1); // دریافت یک پرداخت تکی برای پنل مدیریت
+
+       return app('paymentFunction')->paymentsOfTheLoggedInUser(); // دریافت لیست پرداخت‌های کاربر وارد شده
+
+       return app('paymentFunction')->SinglePaymentsOfTheLoggedInUser(1); // ارسال شناسه پرداخت ($paymentId)
+```
+
 
 <a name="conclusion"></a>
 

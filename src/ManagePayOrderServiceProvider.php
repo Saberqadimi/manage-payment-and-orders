@@ -6,6 +6,7 @@ use Advancelearn\ManagePaymentAndOrders\Models\Address;
 use Advancelearn\ManagePaymentAndOrders\Models\Audit;
 use Advancelearn\ManagePaymentAndOrders\Models\City;
 use Advancelearn\ManagePaymentAndOrders\Models\Functions\OrderFunction;
+use Advancelearn\ManagePaymentAndOrders\Models\Functions\PaymentFunction;
 use Advancelearn\ManagePaymentAndOrders\Models\Inventory;
 use Advancelearn\ManagePaymentAndOrders\Models\Order;
 use Advancelearn\ManagePaymentAndOrders\Models\Payment;
@@ -26,7 +27,7 @@ class ManagePayOrderServiceProvider extends ServiceProvider
         ], 'AdvanceLearnManagePayAndOrder-migrations');
 
         $this->publishes([
-            $this->basePath('database/Seed/') => database_path('seeders'),
+            $this->basePath('database/seeders/') => database_path('seeders'),
         ], 'AdvanceLearnManagePayAndOrder-seeds');
 
     }
@@ -36,6 +37,7 @@ class ManagePayOrderServiceProvider extends ServiceProvider
         $bindings = [
             'order' => Order::class,
             'orderFunction' => OrderFunction::class,
+            'paymentFunction' => PaymentFunction::class,
             'shipping' => Shipping::class,
             'address' => Address::class,
             'inventory' => Inventory::class,

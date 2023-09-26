@@ -1,5 +1,5 @@
 
-# Advancelearn manage-payment-order
+#Advancelearn manage-payment-order
 
 
 <img src="https://banners.beyondco.de/advancelearn%2Fmanage-payment-and-orders.png?theme=light&packageManager=composer+require&packageName=advancelearn%2Fmanage-payment-and-orders&pattern=bankNote&style=style_1&description=Orders+and+payments+management+system+in+Laravel+and+the+feature+of+adding+sales+functionality+for+each+model&md=1&showWatermark=0&fontSize=100px&images=https%3A%2F%2Flaravel.com%2Fimg%2Flogomark.min.svg&widths=250&heights=auto" alt="advancelearn-otp-auth">
@@ -14,7 +14,7 @@
 
 ## Introduction
 
-This package was developed in collaboration with a Sadratek team member and AdvanceLearn. This package aims to create
+This package was developed in collaboration with a Sadratech team member and AdvanceLearn. This package aims to create
 and manage various aspects related to user orders and payments. It includes tracking the number of products and tagging
 all steps of the user's purchase order." This package is currently under active development and there are plans to add a
 shopping voucher module in the future, pending support and feasibility.
@@ -274,7 +274,27 @@ Remember that the address ID you enter for updating must be related to **_`the u
   $delete =  app('orderFunction')->destroyByAdmin($orderId);
   return $delete;
 ```
+You can display the list of orders and payments to the admin and to the user who is logged in with the help of these methods and passing the required parameters.
+##get Orders List Or SingleOrder
+```php
+        return app('orderFunction')->getOrders(); // get Order List for AdminPanel
+        return app('orderFunction')->singleOrder(5); // get singleOrder for AdminPanel
 
+        return app('orderFunction')->ordersOfTheLoggedInUser(); // get user Authenticated Order list
+        return app('orderFunction')->SingleOrderOfTheLoggedInUser(5); //get user Authenticated singleOrder
+```
+
+##get Payments List Or SinglePayment
+```php
+       return app('paymentFunction')->getPayments(); // get PaymentList for AdminPanel
+
+       return app('paymentFunction')->singlePayment(1); //get singlePayment for AdminPanel
+
+
+       return app('paymentFunction')->paymentsOfTheLoggedInUser(); //get user Authenticated payment list
+
+       return app('paymentFunction')->SinglePaymentsOfTheLoggedInUser(1); //send $paymentId
+```
 
 <a name="conclusion"></a>
 

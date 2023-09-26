@@ -34,7 +34,6 @@ class OrderResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'items' => InventoryResource::collection($this->items),
-            'payments' => $this->payments,
             'audits' => array_reverse($this->audits->toArray()),
         ];
     }

@@ -6,6 +6,8 @@ use Advancelearn\ManagePaymentAndOrders\Enums\AuditTypes;
 use Advancelearn\ManagePaymentAndOrders\Models\Payment;
 use Advancelearn\ManagePaymentAndOrders\Transformer\OrderResource;
 use App\Models\Shipping;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse as JsonResponseAlias;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
@@ -19,13 +21,63 @@ class OrderFunction
     const orderNotRegistered = "The number of order registration requests is more than the stock of the product in the warehouse and your order was not registered";
 
     /**
-     * @param $paginateCount
-     * @return AnonymousResourceCollection
+     * Retrieve a paginated list of orders.
+     *
+     * @param int $paginateCount
+     * @return LengthAwarePaginator
      */
-    public function getOrders($paginateCount): AnonymousResourceCollection
+    public function getOrders(int $paginateCount = 6)
     {
-        return OrderResource::collection(app('order')::latest()->paginate($paginateCount));
+        return $this->queryOrders()
+            ->latest()
+            ->paginate($paginateCount);
     }
+
+
+    public function singleOrder($orderId): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|Builder|array|null
+    {
+        return $this->queryOrders()
+            ->findOrfail($orderId);
+    }
+
+    /**
+     * Retrieve a paginated list of orders for the logged-in user.
+     *
+     * @param int $paginateCount
+     * @return LengthAwarePaginator
+     */
+    public function ordersOfTheLoggedInUser(int $paginateCount = 6): LengthAwarePaginator
+    {
+        return $this->queryOrders()
+            ->whereHas('address', fn ($query) => $query->where('user_id', Auth::id()))
+            ->latest()
+            ->paginate($paginateCount);
+    }
+
+
+    /**
+     * @param $orderId
+     * @return mixed
+     */
+    public function SingleOrderOfTheLoggedInUser($orderId): mixed
+    {
+        return $this->queryOrders()
+            ->whereId($orderId)
+            ->whereHas('address', fn ($query) => $query->where('user_id', Auth::id()))
+            ->first();
+    }
+
+    /**
+     * Common query to fetch orders with relationships.
+     *
+     * @return Builder
+     */
+    private function queryOrders(): Builder
+    {
+        return app('order')
+            ->with(['address', 'audits', 'items']);
+    }
+
 
     /**
      * Store a new order.

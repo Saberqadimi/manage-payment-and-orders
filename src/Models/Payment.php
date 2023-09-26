@@ -19,7 +19,7 @@ class Payment extends Model
 
     public function order(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(app('order'));
     }
 
 }

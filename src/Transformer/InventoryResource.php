@@ -27,7 +27,6 @@ class InventoryResource extends JsonResource
             'pivot' => $this->pivot,
             'discounted_price' => $this->discounted_price,
             'description' => json_decode($this->description, JSON_UNESCAPED_UNICODE),
-            'discounts' => $this->whenLoaded('discounts'),
         ];
     }
 }
