@@ -84,7 +84,7 @@ In the next step, you have to set the values of these three tables for your user
 
 this table ****`adm_addresses`**** example:
 
-![img_7.png](./assets/images/img_7.png)
+![img.png](assets/images/img_7.png)
 
 this table **_`adm_inventories`_** example:
 
