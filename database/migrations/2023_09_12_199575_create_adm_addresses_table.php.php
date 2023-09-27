@@ -20,6 +20,8 @@ return new class extends Migration {
             $table->foreign('adm_city_id')->references('id')->on('adm_cities')->onDelete('set null');
             $table->string('address');
             $table->string('description');
+            $table->bigInteger('postal_code')->nullable();
+            $table->bigInteger('phone')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

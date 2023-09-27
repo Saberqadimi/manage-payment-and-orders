@@ -12,6 +12,8 @@ use Advancelearn\ManagePaymentAndOrders\Models\Order;
 use Advancelearn\ManagePaymentAndOrders\Models\Payment;
 use Advancelearn\ManagePaymentAndOrders\Models\Province;
 use Advancelearn\ManagePaymentAndOrders\Models\Shipping;
+use Advancelearn\ManagePaymentAndOrders\Observers\AdmUserObserver;
+use App\Models\User;
 use Illuminate\Support\ServiceProvider;
 
 
@@ -29,6 +31,8 @@ class ManagePayOrderServiceProvider extends ServiceProvider
         $this->publishes([
             $this->basePath('database/seeders/') => database_path('seeders'),
         ], 'AdvanceLearnManagePayAndOrder-seeds');
+
+        User::Observe(AdmUserObserver::class);
 
     }
 
