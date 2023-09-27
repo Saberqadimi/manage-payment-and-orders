@@ -296,6 +296,11 @@ You can display the list of orders and payments to the admin and to the user who
        return app('paymentFunction')->SinglePaymentsOfTheLoggedInUser(1); //send $paymentId
 ```
 
+##keep in mind
+
+"When a user utilizes your User model and you have defined Address relationships for this user, upon creating a new user account in the system, with the assistance of AdmUserObserve in your package, a digital address is generated for the user within the system. In this manner, if the user intends to purchase non-physical products for which shipping costs are irrelevant, we create a digital delivery address in the system for them."
+
+
 <a name="conclusion"></a>
 
 ## Conclusion

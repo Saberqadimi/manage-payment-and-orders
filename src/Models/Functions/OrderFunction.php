@@ -89,11 +89,12 @@ class OrderFunction
      * @param string|null $couponCode
      * @return mixed
      */
-    public function store(int $shippingId, int $addressId, string $description, array $items, string $couponCode = null): mixed
+    public function store(int $shippingId = null , int $addressId, string $description, array $items, string $couponCode = null): mixed
     {
 
         return DB::transaction(function () use ($shippingId, $addressId, $description, $items, $couponCode) {
-            $shipping = app('shipping')::findOrFail($shippingId);
+
+            $shipping = ($shippingId != null) ? app('shipping')::findOrFail($shippingId) : null;
             $address = app('address')::findOrFail($addressId);
             $items = $this->filterItemsByInventory($items);
             if (count($items) > 0) {
@@ -139,8 +140,8 @@ class OrderFunction
             "order_number" => $this->generateOrderNumber(),
             "description" => $description,
             "adm_addresses_id" => $address->id,
-            "adm_shippings_id" => optional($shipping)->id,
-            "shipping_price" => optional($shipping)->price,
+            "adm_shippings_id" => ($shipping != null) ? optional($shipping)->id : $shipping,
+            "shipping_price" => ($shipping != null) ?optional($shipping)->price : $shipping,
             "tax" => 0
         ]);
     }
