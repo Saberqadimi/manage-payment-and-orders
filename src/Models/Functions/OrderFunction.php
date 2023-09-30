@@ -3,6 +3,7 @@
 namespace Advancelearn\ManagePaymentAndOrders\Models\Functions;
 
 use Advancelearn\ManagePaymentAndOrders\Enums\AuditTypes;
+use Advancelearn\ManagePaymentAndOrders\Models\Address;
 use Advancelearn\ManagePaymentAndOrders\Models\Payment;
 use Advancelearn\ManagePaymentAndOrders\Transformer\OrderResource;
 use App\Models\Shipping;
@@ -49,7 +50,7 @@ class OrderFunction
     public function ordersOfTheLoggedInUser(int $paginateCount = 6): LengthAwarePaginator
     {
         return $this->queryOrders()
-            ->whereHas('address', fn ($query) => $query->where('user_id', Auth::id()))
+            ->whereHas('address', fn($query) => $query->where('user_id', Auth::id()))
             ->latest()
             ->paginate($paginateCount);
     }
@@ -63,7 +64,7 @@ class OrderFunction
     {
         return $this->queryOrders()
             ->whereId($orderId)
-            ->whereHas('address', fn ($query) => $query->where('user_id', Auth::id()))
+            ->whereHas('address', fn($query) => $query->where('user_id', Auth::id()))
             ->first();
     }
 
@@ -89,30 +90,29 @@ class OrderFunction
      * @param string|null $couponCode
      * @return mixed
      */
-    public function store(int $shippingId = null , int $addressId, string $description, array $items, string $couponCode = null): mixed
+    public function store($shippingId, int $addressId, string $description, array $items, string $couponCode = null): mixed
     {
+        try {
+            return DB::transaction(function () use ($shippingId, $addressId, $description, $items, $couponCode) {
+                $shipping = ($shippingId != null) ? app('shipping')::findOrFail($shippingId) : $shippingId;
+                $address = app('address')::findOrFail($addressId);
+                $items = $this->filterItemsByInventory($items);
+                if (count($items) > 0) {
+                    $order = $this->createOrder($description, $address, $shipping);
+                    $orderItems = $this->prepareOrderItems($items);
+                    $this->syncOrderItems($order, $orderItems);
+                    $amount = $this->getOrderAmount($order);
+                    $this->updateOrderPrices($order, $amount);
+                    $this->attachAudit($order);
 
-        return DB::transaction(function () use ($shippingId, $addressId, $description, $items, $couponCode) {
+                    return new OrderResource($order);
+                }
 
-            $shipping = ($shippingId != null) ? app('shipping')::findOrFail($shippingId) : null;
-            $address = app('address')::findOrFail($addressId);
-            $items = $this->filterItemsByInventory($items);
-            if (count($items) > 0) {
-                $order = $this->createOrder($description, $address, $shipping);
-                $orderItems = $this->prepareOrderItems($items);
-
-                $this->syncOrderItems($order, $orderItems);
-
-                $amount = $this->getOrderAmount($order);
-
-                $this->updateOrderPrices($order, $amount);
-
-                $this->attachAudit($order);
-
-                return new OrderResource($order);
-            }
-            return response()->json(['errors' => self::orderNotRegistered], 422);
-        });
+                return response()->json(['error' => self::orderNotRegistered], 422);
+            });
+        } catch (\Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
 
@@ -134,14 +134,14 @@ class OrderFunction
      * @param mixed $shipping
      * @return mixed
      */
-    private function createOrder(string $description, mixed $address, mixed $shipping): mixed
+    private function createOrder(string $description, Address $address, mixed $shipping): mixed
     {
         return app('order')::forceCreate([
             "order_number" => $this->generateOrderNumber(),
             "description" => $description,
             "adm_addresses_id" => $address->id,
             "adm_shippings_id" => ($shipping != null) ? optional($shipping)->id : $shipping,
-            "shipping_price" => ($shipping != null) ?optional($shipping)->price : $shipping,
+            "shipping_price" => ($shipping != null) ? optional($shipping)->price : $shipping,
             "tax" => 0
         ]);
     }
@@ -221,7 +221,7 @@ class OrderFunction
      * @param string|null $couponCode
      * @return mixed
      */
-    public function update(int $shippingId, int $addressId, string $description, string $shippingDate, array $items, int $auditId, int $orderId, string $couponCode = null)
+    public function update(mixed $shippingId, int $addressId, string $description, string $shippingDate, array $items, int $auditId, int $orderId, string $couponCode = null): mixed
     {
         return DB::transaction(function () use ($shippingId, $addressId, $description, $shippingDate, $items, $auditId, $orderId, $couponCode) {
             try {
@@ -259,11 +259,11 @@ class OrderFunction
      * @param int $shippingId
      * @param string $shippingDate
      */
-    private function updateOrderDetails($order, int $addressId, string $description, int $shippingId, string $shippingDate)
+    private function updateOrderDetails($order, int $addressId, string $description, mixed $shippingId, string $shippingDate)
     {
         $order->description = $description;
         $order->adm_addresses_id = $addressId ?? $order->adm_addresses_id;
-        if ($order->address->adm_city_id) {
+        if ($order->address->adm_city_id and $shippingId) {
             $shipping = app('shipping')::find($shippingId);
             $order->adm_shippings_id = $shipping->id;
             $order->shipping_price = $shipping->price;
@@ -284,12 +284,15 @@ class OrderFunction
         foreach ($orderItems as &$item) {
             $item['price'] = $item['price'] ?? app('inventory')::find($item['inventory_id'])->price;
         }
-
         $order->items()->sync($orderItems);
         $amount = $this->getOrderAmount($order);
-        $order->order_price = $amount;
-        $order->payment_price = $amount;
+
+        $order->update([
+            'order_price' => $amount,
+            'payment_price' => $amount,
+        ]);
     }
+
 
     /**
      * Update order audits.
@@ -316,7 +319,7 @@ class OrderFunction
     private function filterItemsByInventory(array $items): array
     {
         $filteredItems = array_filter($items, function ($item) {
-            $inventory = app('inventory')::find($item['inventory_id']);
+            $inventory = app('inventory')::findOrFail($item['inventory_id']);
             if ($inventory && $inventory->count >= $item['quantity']) {
                 return true;
             }

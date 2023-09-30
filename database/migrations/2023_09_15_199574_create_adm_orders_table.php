@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->id();
             $table->string('order_number');
             $table->foreignId('adm_addresses_id')->constrained('adm_addresses')->nullable();
-            $table->foreignId('adm_shippings_id')->constrained('adm_shippings');
+            $table->foreignId('adm_shippings_id')->constrained('adm_shippings')->nullable();
             $table->integer('shipping_price');
             $table->integer('order_price')->nullable();
             $table->integer('payment_price')->nullable();

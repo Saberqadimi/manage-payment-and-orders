@@ -106,12 +106,16 @@ Tag: AdvanceLearnManagePayAndOrder-seeds .....
 ```php
 $items = [
     0 => [
-        'quantity' => 1,
-        "inventory_id" => 2
+        'quantity' => 2,
+        "inventory_id" => 1
     ]
+
 ];
-        
-app('orderFunction')->store(int $shippingId, int $addressId, string $description, array $items);
+$shippingId = $request->shippingId; //It can be null
+$addressId = (int)$request->addressId;
+$newOrder = app('orderFunction')->store($shippingId, $addressId, "test from create new order", $items);
+//
+return $newOrder;
 #پارامترها :
 # shippingId => نوع حمل و نقل,
 # $addressId => شناسه آدرس ذخیره شده برای کاربر در جدول آدرس ,
@@ -207,20 +211,20 @@ use Advancelearn\ManagePaymentAndOrders\Enums\AuditTypes;
 ```
 
 ```php
-    private function verifyPayAndConfirm($receipt, $payment, Request $request): void
-    {
-        $payment->reference_id = $receipt->getReferenceId();
-        $payment->transaction = $request->all();
-        $payment->driver = $receipt->getDriver();
-        $payment->save();
-        $order->audits()->attach([AuditTypes::PAID => ['description' => 'پرداخت با موفقیت انجام شد']]);
-        foreach ($order->items as $item) {
-            // این متد از رویایی تا اینجا فراخوانی می‌شود
-            // تا برسد به متدی که در مدل مربوطه از رابط ایجاد کرده‌ایم
-            $item->PaymentConfirmation($order->address->user_id);
-        }
-        return $receipt;
+private function verifyPayAndConfirm($receipt, $payment, Request $request): void
+{
+    $payment->reference_id = $receipt->getReferenceId();
+    $payment->transaction = $request->all();
+    $payment->driver = $receipt->getDriver();
+    $payment->save();
+    $order->audits()->attach([AuditTypes::PAID => ['description' => 'پرداخت با موفقیت انجام شد']]);
+    foreach ($order->items as $item) {
+        // این متد از رویایی تا اینجا فراخوانی می‌شود
+        // تا برسد به متدی که در مدل مربوطه از رابط ایجاد کرده‌ایم
+        $item->PaymentConfirmation($order->address->user_id);
     }
+    return $receipt;
+}
 ```
 
 ## وضعیت پرداخت
@@ -273,22 +277,22 @@ return $updateOrder;
 
 ## دریافت لیست سفارش‌ها یا یک سفارش تکی
 ```php
-        return app('orderFunction')->getOrders(); // دریافت لیست سفارش‌ها برای پنل مدیریت
-        return app('orderFunction')->singleOrder(5); // دریافت یک سفارش تکی برای پنل مدیریت
+return app('orderFunction')->getOrders(); // دریافت لیست سفارش‌ها برای پنل مدیریت
+return app('orderFunction')->singleOrder(5); // دریافت یک سفارش تکی برای پنل مدیریت
 
-        return app('orderFunction')->ordersOfTheLoggedInUser(); // دریافت لیست سفارش‌های کاربر وارد شده
-        return app('orderFunction')->SingleOrderOfTheLoggedInUser(5); // دریافت یک سفارش تکی کاربر وارد شده
+return app('orderFunction')->ordersOfTheLoggedInUser(); // دریافت لیست سفارش‌های کاربر وارد شده
+return app('orderFunction')->SingleOrderOfTheLoggedInUser(5); // دریافت یک سفارش تکی کاربر وارد شده
 ```
 
 ## دریافت لیست پرداخت‌ها یا یک پرداخت تکی
 ```php
-       return app('paymentFunction')->getPayments(); // دریافت لیست پرداخت‌ها برای پنل مدیریت
+return app('paymentFunction')->getPayments(); // دریافت لیست پرداخت‌ها برای پنل مدیریت
 
-       return app('paymentFunction')->singlePayment(1); // دریافت یک پرداخت تکی برای پنل مدیریت
+return app('paymentFunction')->singlePayment(1); // دریافت یک پرداخت تکی برای پنل مدیریت
 
-       return app('paymentFunction')->paymentsOfTheLoggedInUser(); // دریافت لیست پرداخت‌های کاربر وارد شده
+return app('paymentFunction')->paymentsOfTheLoggedInUser(); // دریافت لیست پرداخت‌های کاربر وارد شده
 
-       return app('paymentFunction')->SinglePaymentsOfTheLoggedInUser(1); // ارسال شناسه پرداخت ($paymentId)
+return app('paymentFunction')->SinglePaymentsOfTheLoggedInUser(1); // ارسال شناسه پرداخت ($paymentId)
 ```
 
 ## به یادداشته باشید

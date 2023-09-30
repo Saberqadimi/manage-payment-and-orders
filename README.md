@@ -108,12 +108,16 @@ We receive and send the requested parameters from the user:
 ```php
 $items = [
     0 => [
-        'quantity' => 1,
-        "inventory_id" => 2
+        'quantity' => 2,
+        "inventory_id" => 1
     ]
+
 ];
-        
-app('orderFunction')->store(int $shippingId, int $addressId, string $description, array $items);
+$shippingId = $request->shippingId; //It can be null
+$addressId = (int)$request->addressId;
+$newOrder = app('orderFunction')->store($shippingId, $addressId, "test from create new order", $items);
+//
+return $newOrder;
 #params :
 # shippingId => Type of shipment,
 # $addressId => The address ID stored for the user in the address table ,
@@ -194,16 +198,16 @@ And for example, in your callback method that returns from the portal, let's ass
 paymentConfirmation.
 
 ```php
-    public function paymentConfirmation(Request $request)
-    {
-        $payment = app('payment')::where('transaction_id', $transactionId)->first();
-        $order = app('order')::find($payment->order_id);
-         $receipt = //api call gateway for verifyPayment and get response add to this variable
-        $this->verifyPayAndConfirm($payment, $order, $request);
+public function paymentConfirmation(Request $request)
+{
+    $payment = app('payment')::where('transaction_id', $transactionId)->first();
+    $order = app('order')::find($payment->order_id);
+     $receipt = //api call gateway for verifyPayment and get response add to this variable
+    $this->verifyPayAndConfirm($payment, $order, $request);
 //          return redirect('https://example.com?gatewayOrderID=' .
 //           $paymentTransaction->OrderId ?? null . '&RRN=' .
 //           $paymentTransaction->RRN ?? null);
-    }
+}
 ```
 
 create call method verifyPayAndConfirm::
@@ -212,21 +216,21 @@ write this namespace in your class:
 use Advancelearn\ManagePaymentAndOrders\Enums\AuditTypes; 
 ```
 ```php
-    private function verifyPayAndConfirm($receipt, $payment, Request $request): void
-    {
-        $payment->reference_id = $receipt->getReferenceId();
-        $payment->transaction = $request->all();
-        $payment->driver = $receipt->getDriver();
-        $payment->save();
-        $order->audits()->attach([AuditTypes::PAID => ['description' => 'Payment was successful']]);
-        foreach ($order->items as $item) {
-            //this method called fromAnd finally, this
-            // method reaches the method that we implemented
-            // in the corresponding model of the interface 
-            $item->PaymentConfirmation($order->address->user_id);
-        }
-        return $receipt;
+private function verifyPayAndConfirm($receipt, $payment, Request $request): void
+{
+    $payment->reference_id = $receipt->getReferenceId();
+    $payment->transaction = $request->all();
+    $payment->driver = $receipt->getDriver();
+    $payment->save();
+    $order->audits()->attach([AuditTypes::PAID => ['description' => 'Payment was successful']]);
+    foreach ($order->items as $item) {
+        //this method called fromAnd finally, this
+        // method reaches the method that we implemented
+        // in the corresponding model of the interface 
+        $item->PaymentConfirmation($order->address->user_id);
     }
+    return $receipt;
+}
 ```
 ##Payment status
 
@@ -250,50 +254,52 @@ You can create a new record in the adm_shippings table for the types of shipping
 $shippingId = app('shipping')::find(1)->pluck('id')->first();
 ```
 ```php
- $auditId = app('audit')::find(2)->toArray();
- $items = [
+$items = [
     0 => [
         'quantity' => 1,
-        "inventory_id" => 1
+        "inventory_id" => 1,
+        "price" => 168000//It can be Nal
     ]
 ];
-$updateOrder = app('orderFunction')->update(int $shippingId, int $addressId, string $description, string $shippingDate, array $items, int $audit, int $orderId);
-
-return $updateOrder;
+$shippingId = $request->shippingId; //can be null
+$addressId = $request->addressId;
+$auditId = app('audit')::find(2)->toArray();
+$orderId = 9;
+$update = app('orderFunction')->update($shippingId, $addressId, "update order for test", "2023-09-28 10:01:03", $items, $auditId['id'], $orderId);
 #params => shippingId , $addressId , $description , $shippingDate , $items , $auditID , $orderId
 ```
 ##Important
 Remember that the address ID you enter for updating must be related to **_`the user who made the purchase`_**, because we reach the user from the address in the codes.
 ####You can use this method to cancel the order By User
 ```php
- $delete =  app('orderFunction')->destroyByUser($orderId);
- return $delete;
+$delete =  app('orderFunction')->destroyByUser($orderId);
+return $delete;
 ```
 ####You can use this method to cancel the order By Admin
 ```php
-  $delete =  app('orderFunction')->destroyByAdmin($orderId);
-  return $delete;
+$delete =  app('orderFunction')->destroyByAdmin($orderId);
+return $delete;
 ```
 You can display the list of orders and payments to the admin and to the user who is logged in with the help of these methods and passing the required parameters.
 ## get Orders List Or SingleOrder
 ```php
-        return app('orderFunction')->getOrders(); // get Order List for AdminPanel
-        return app('orderFunction')->singleOrder(5); // get singleOrder for AdminPanel
+return app('orderFunction')->getOrders(); // get Order List for AdminPanel
+return app('orderFunction')->singleOrder(5); // get singleOrder for AdminPanel
 
-        return app('orderFunction')->ordersOfTheLoggedInUser(); // get user Authenticated Order list
-        return app('orderFunction')->SingleOrderOfTheLoggedInUser(5); //get user Authenticated singleOrder
+return app('orderFunction')->ordersOfTheLoggedInUser(); // get user Authenticated Order list
+return app('orderFunction')->SingleOrderOfTheLoggedInUser(5); //get user Authenticated singleOrder
 ```
 
 ## get Payments List Or SinglePayment
 ```php
-       return app('paymentFunction')->getPayments(); // get PaymentList for AdminPanel
+return app('paymentFunction')->getPayments(); // get PaymentList for AdminPanel
 
-       return app('paymentFunction')->singlePayment(1); //get singlePayment for AdminPanel
+return app('paymentFunction')->singlePayment(1); //get singlePayment for AdminPanel
 
 
-       return app('paymentFunction')->paymentsOfTheLoggedInUser(); //get user Authenticated payment list
+return app('paymentFunction')->paymentsOfTheLoggedInUser(); //get user Authenticated payment list
 
-       return app('paymentFunction')->SinglePaymentsOfTheLoggedInUser(1); //send $paymentId
+return app('paymentFunction')->SinglePaymentsOfTheLoggedInUser(1); //send $paymentId
 ```
 
 ##keep in mind
